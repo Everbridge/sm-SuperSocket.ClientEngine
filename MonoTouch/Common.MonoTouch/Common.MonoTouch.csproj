@@ -52,9 +52,6 @@
     <Compile Include="..\..\Common\ConnectAsyncExtension.Net.cs">
       <Link>ConnectAsyncExtension.Net.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\DnsEndPoint.cs">
-      <Link>DnsEndPoint.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\ExtensionAttribute.cs">
       <Link>ExtensionAttribute.cs</Link>
     </Compile>
@@ -83,10 +80,10 @@
       <Link>SearchMarkState.cs</Link>
     </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkReference="38367ec0-d72e-4ec5-8fba-0ae3706a2c49" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="38367ec0-d72e-4ec5-8fba-0ae3706a2c49" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

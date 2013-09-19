@@ -37,38 +37,38 @@
     <Reference Include="monotouch" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Protocol\ArraySegmentEx.cs">
+    <Compile Include="..\..\Protocol\ArraySegmentEx.cs">
       <Link>ArraySegmentEx.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\ArraySegmentList.cs">
+    <Compile Include="..\..\Protocol\ArraySegmentList.cs">
       <Link>ArraySegmentList.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\AssemblyUtil.cs">
+    <Compile Include="..\..\Protocol\AssemblyUtil.cs">
       <Link>AssemblyUtil.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\BinaryCommandInfo.cs">
+    <Compile Include="..\..\Protocol\BinaryCommandInfo.cs">
       <Link>BinaryCommandInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\CommandInfo.cs">
+    <Compile Include="..\..\Protocol\CommandInfo.cs">
       <Link>CommandInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\DelegateCommand.cs">
+    <Compile Include="..\..\Protocol\DelegateCommand.cs">
       <Link>DelegateCommand.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\IClientCommandReader.cs">
+    <Compile Include="..\..\Protocol\IClientCommandReader.cs">
       <Link>IClientCommandReader.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\ICommand.cs">
+    <Compile Include="..\..\Protocol\ICommand.cs">
       <Link>ICommand.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\ICommandInfo.cs">
+    <Compile Include="..\..\Protocol\ICommandInfo.cs">
       <Link>ICommandInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Protocol\StringCommandInfo.cs">
+    <Compile Include="..\..\Protocol\StringCommandInfo.cs">
       <Link>StringCommandInfo.cs</Link>
     </Compile>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties ProjectLinkReference="af269343-f9fd-4823-ac0a-3481446c7686" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
