@@ -35,17 +35,22 @@ namespace SuperSocket.ClientEngine
             ProcessReceive(e);
         }
 
+        protected override void SetBuffer(ArraySegment<byte> bufferSegment)
+        {
+            base.SetBuffer(bufferSegment);
+
+            if (m_SocketEventArgs != null)
+            {
+                m_SocketEventArgs.SetBuffer(bufferSegment.Array, bufferSegment.Offset, bufferSegment.Count);
+            }
+        }
+
         protected override void OnGetSocket(SocketAsyncEventArgs e)
         {
             if (Buffer.Array == null)
                 Buffer = new ArraySegment<byte>(new byte[ReceiveBufferSize], 0, ReceiveBufferSize);
 
             e.SetBuffer(Buffer.Array, Buffer.Offset, Buffer.Count);
-
-            if (m_SocketEventArgs != null)
-            {
-                m_SocketEventArgs.Dispose();
-            }
 
             m_SocketEventArgs = e;
 
@@ -189,6 +194,23 @@ namespace SuperSocket.ClientEngine
             }
 
             OnSendingCompleted();
+        }
+
+        protected override void OnClosed()
+        {
+            if (m_SocketEventArgsSend != null)
+            {
+                m_SocketEventArgsSend.Dispose();
+                m_SocketEventArgsSend = null;
+            }
+
+            if (m_SocketEventArgs != null)
+            {
+                m_SocketEventArgs.Dispose();
+                m_SocketEventArgs = null;
+            }
+
+            base.OnClosed();
         }
     }
 }

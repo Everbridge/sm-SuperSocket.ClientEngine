@@ -92,46 +92,14 @@ namespace SuperSocket.ClientEngine
 
         public override void Connect()
         {
-            if (m_InConnecting)
-                throw new Exception("The socket is connecting, cannot connect again!");
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            if (Client != null)
-                throw new Exception("The socket is connected, you neednt' connect again!");
-
-            //If there is a proxy set, connect the proxy server by proxy connector
-            if (Proxy != null)
-            {
-                Proxy.Completed += new EventHandler<ProxyEventArgs>(Proxy_Completed);
-                Proxy.Connect(RemoteEndPoint);
-                m_InConnecting = true;
-                return;
-            }
-
-            m_InConnecting = true;
-
-//WindowsPhone doesn't have this property
-#if SILVERLIGHT && !WINDOWS_PHONE
-            RemoteEndPoint.ConnectAsync(ClientAccessPolicyProtocol, ProcessConnect, null);
-#else
-            RemoteEndPoint.ConnectAsync(ProcessConnect, null);
-#endif
+            var socketEventArg = new SocketAsyncEventArgs {RemoteEndPoint = RemoteEndPoint};
+            socketEventArg.Completed += ProcessConnect2;
+            Client.ConnectAsync(socketEventArg);
         }
 
-        void Proxy_Completed(object sender, ProxyEventArgs e)
-        {
-            Proxy.Completed -= new EventHandler<ProxyEventArgs>(Proxy_Completed);
-
-            if (e.Connected)
-            {
-                ProcessConnect(e.Socket, null, null);
-                return;
-            }
-
-            OnError(new Exception("proxy error", e.Exception));
-            m_InConnecting = false;
-        }
-
-        protected void ProcessConnect(Socket socket, object state, SocketAsyncEventArgs e)
+        protected void ProcessConnect2(object socket, SocketAsyncEventArgs e)
         {
             if (e != null && e.SocketError != SocketError.Success)
             {
@@ -144,6 +112,53 @@ namespace SuperSocket.ClientEngine
             {
                 m_InConnecting = false;
                 OnError(new SocketException((int)SocketError.ConnectionAborted));
+                return;
+            }
+
+            if (e == null)
+                e = new SocketAsyncEventArgs();
+
+            e.Completed += SocketEventArgsCompleted;
+
+            Client = socket as Socket;
+
+            m_InConnecting = false;
+
+#if !SILVERLIGHT
+            //Set keep alive
+            Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+#endif
+            OnGetSocket(e);
+        }
+
+        protected void ProcessConnect(Socket socket, object state, SocketAsyncEventArgs e)
+        {
+            if (e != null && e.SocketError != SocketError.Success)
+            {
+                e.Dispose();
+                m_InConnecting = false;
+                OnError(new SocketException((int)e.SocketError));
+                return;
+            }
+
+            if (socket == null)
+            {
+                m_InConnecting = false;
+                OnError(new SocketException((int)SocketError.ConnectionAborted));
+                return;
+            }
+
+            //To walk around a MonoTouch's issue
+            //one user reported in some cases the e.SocketError = SocketError.Succes but the socket is not connected in MonoTouch
+            if (!socket.Connected)
+            {
+                m_InConnecting = false;
+#if SILVERLIGHT
+                var socketError = SocketError.ConnectionReset;
+#else
+                var socketError = (SocketError)socket.GetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Error);
+#endif
+                OnError(new SocketException((int)socketError));
                 return;
             }
 
@@ -210,12 +225,12 @@ namespace SuperSocket.ClientEngine
             return fireOnClosedEvent;
         }
 
-        private void DetectConnected()
+        private bool DetectConnected()
         {
             if (Client != null)
-                return;
-
-            throw new Exception("The socket is not connected!", new SocketException((int)SocketError.NotConnected));
+                return true;
+            OnError(new SocketException((int)SocketError.NotConnected));
+            return false;
         }
 
         private IBatchQueue<ArraySegment<byte>> m_SendingQueue;
@@ -255,7 +270,11 @@ namespace SuperSocket.ClientEngine
 
         public override bool TrySend(ArraySegment<byte> segment)
         {
-            DetectConnected();
+            if (!DetectConnected())
+            {
+                //may be return false? 
+                return true;
+            }
 
             if (!GetSendingQueue().Enqueue(segment))
                 return false;
@@ -270,7 +289,11 @@ namespace SuperSocket.ClientEngine
 
         public override bool TrySend(IList<ArraySegment<byte>> segments)
         {
-            DetectConnected();
+            if (!DetectConnected())
+            {
+                //may be return false? 
+                return true;
+            }
 
             if (!GetSendingQueue().Enqueue(segments))
                 return false;
