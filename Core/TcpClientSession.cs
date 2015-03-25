@@ -92,43 +92,43 @@ namespace SuperSocket.ClientEngine
 
         public override void Connect()
         {
-            if (m_InConnecting)
-                throw new Exception("The socket is connecting, cannot connect again!");
+            Client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            if (Client != null)
-                throw new Exception("The socket is connected, you neednt' connect again!");
-
-            //If there is a proxy set, connect the proxy server by proxy connector
-            if (Proxy != null)
-            {
-                Proxy.Completed += new EventHandler<ProxyEventArgs>(Proxy_Completed);
-                Proxy.Connect(RemoteEndPoint);
-                m_InConnecting = true;
-                return;
-            }
-
-            m_InConnecting = true;
-
-//WindowsPhone doesn't have this property
-#if SILVERLIGHT && !WINDOWS_PHONE
-            RemoteEndPoint.ConnectAsync(ClientAccessPolicyProtocol, ProcessConnect, null);
-#else
-            RemoteEndPoint.ConnectAsync(ProcessConnect, null);
-#endif
+            var socketEventArg = new SocketAsyncEventArgs {RemoteEndPoint = RemoteEndPoint};
+            socketEventArg.Completed += ProcessConnect2;
+            Client.ConnectAsync(socketEventArg);
         }
 
-        void Proxy_Completed(object sender, ProxyEventArgs e)
+        protected void ProcessConnect2(object socket, SocketAsyncEventArgs e)
         {
-            Proxy.Completed -= new EventHandler<ProxyEventArgs>(Proxy_Completed);
-
-            if (e.Connected)
+            if (e != null && e.SocketError != SocketError.Success)
             {
-                ProcessConnect(e.Socket, null, null);
+                m_InConnecting = false;
+                OnError(new SocketException((int)e.SocketError));
                 return;
             }
 
-            OnError(new Exception("proxy error", e.Exception));
+            if (socket == null)
+            {
+                m_InConnecting = false;
+                OnError(new SocketException((int)SocketError.ConnectionAborted));
+                return;
+            }
+
+            if (e == null)
+                e = new SocketAsyncEventArgs();
+
+            e.Completed += SocketEventArgsCompleted;
+
+            Client = socket as Socket;
+
             m_InConnecting = false;
+
+#if !SILVERLIGHT
+            //Set keep alive
+            Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+#endif
+            OnGetSocket(e);
         }
 
         protected void ProcessConnect(Socket socket, object state, SocketAsyncEventArgs e)
