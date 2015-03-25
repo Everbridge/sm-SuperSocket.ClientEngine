@@ -103,6 +103,7 @@ namespace SuperSocket.ClientEngine
         {
             if (e != null && e.SocketError != SocketError.Success)
             {
+                e.Dispose();
                 m_InConnecting = false;
                 OnError(new SocketException((int)e.SocketError));
                 return;
@@ -205,21 +206,20 @@ namespace SuperSocket.ClientEngine
                 m_IsSending = 0;
             }
 
-            if (client.Connected)
+            try
+            {
+                client.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {}
+            finally
             {
                 try
                 {
-                    client.Shutdown(SocketShutdown.Both);
+                    client.Close();
                 }
-                catch { }
-                finally
-                {
-                    try
-                    {
-                        client.Close();
-                    }
-                    catch {}
-                }
+                catch
+                {}
             }
 
             return fireOnClosedEvent;
