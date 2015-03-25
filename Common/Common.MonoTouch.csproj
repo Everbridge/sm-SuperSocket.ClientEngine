@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -29,6 +29,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
+    <DefineConstants />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -37,53 +38,26 @@
     <Reference Include="monotouch" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\ASCIIEncoding.cs">
-      <Link>ASCIIEncoding.cs</Link>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>GlobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\ConcurrentBatchQueue.cs">
-      <Link>ConcurrentBatchQueue.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ConnectAsyncExtension.cs">
-      <Link>ConnectAsyncExtension.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ConnectAsyncExtension.MonoDroid.cs">
-      <Link>ConnectAsyncExtension.MonoDroid.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ConnectAsyncExtension.Net.cs">
-      <Link>ConnectAsyncExtension.Net.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ExtensionAttribute.cs">
-      <Link>ExtensionAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Extensions.cs">
-      <Link>Extensions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\GenericDelegates.Func.cs">
-      <Link>GenericDelegates.Func.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\IBatchQueue.cs">
-      <Link>IBatchQueue.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\IProxyConnector.cs">
-      <Link>IProxyConnector.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\NameValueCollection.cs">
-      <Link>NameValueCollection.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\PosList.cs">
-      <Link>PosList.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\ProxyEventArgs.cs">
-      <Link>ProxyEventArgs.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\SearchMarkState.cs">
-      <Link>SearchMarkState.cs</Link>
-    </Compile>
+    <Compile Include="ASCIIEncoding.cs" />
+    <Compile Include="ConcurrentBatchQueue.cs" />
+    <Compile Include="ConnectAsyncExtension.cs" />
+    <Compile Include="ConnectAsyncExtension.MonoDroid.cs" />
+    <Compile Include="ConnectAsyncExtension.Net.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="IBatchQueue.cs" />
+    <Compile Include="IProxyConnector.cs" />
+    <Compile Include="PosList.cs" />
+    <Compile Include="Properties\AssemblyInfo.MonoTouch.cs" />
+    <Compile Include="ProxyEventArgs.cs" />
+    <Compile Include="SearchMarkState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.MonoTouch.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" ProjectLinkReference="38367ec0-d72e-4ec5-8fba-0ae3706a2c49" />
+      <UserProperties ProjectLinkReference="38367ec0-d72e-4ec5-8fba-0ae3706a2c49" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
