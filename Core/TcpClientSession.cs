@@ -126,8 +126,18 @@ namespace SuperSocket.ClientEngine
             m_InConnecting = false;
 
 #if !SILVERLIGHT
-            //Set keep alive
-            Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            try
+            {
+                // try to set keep alive
+                Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
+            }
+            catch (Exception ex)
+            {
+                e.Dispose();
+                m_InConnecting = false;
+                OnError(ex);
+                return;
+            }
 #endif
             OnGetSocket(e);
         }
