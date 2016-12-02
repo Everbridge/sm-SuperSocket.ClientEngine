@@ -150,7 +150,7 @@ namespace SuperSocket.ClientEngine
 
             var address = GetNextAddress(connectState, out attempSocket);
 
-            if (address == null)
+            if (address == null || attempSocket == null)
             {
                 ClearSocketAsyncEventArgs(e);
                 e.SocketError = SocketError.HostUnreachable;
