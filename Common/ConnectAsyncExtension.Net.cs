@@ -160,8 +160,16 @@ namespace SuperSocket.ClientEngine
 
             e.RemoteEndPoint = new IPEndPoint(address, connectState.Port);
 
-            if (!attempSocket.ConnectAsync(e))
-                SocketConnectCompleted(attempSocket, e);
+            try
+            {
+                if (!attempSocket.ConnectAsync(e))
+                    SocketConnectCompleted(attempSocket, e);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine($"[SuperSocket] - Error: {exception}");
+            }
+
         }
 
         private static void ClearSocketAsyncEventArgs(SocketAsyncEventArgs e)
